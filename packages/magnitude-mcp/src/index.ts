@@ -230,9 +230,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 context = await chromium.launchPersistentContext(config.profileDir, launchOptions);
 
                 // Create harness
-                // Use Claude's virtual screen dimensions since we do not know that model might use the MCP server
+                // Use fixed 1000x1000 virtual screen dimensions for consistent LLM input
                 harness = new WebHarness(context, {
-                    virtualScreenDimensions: { width: 1024, height: 768 },
+                    virtualScreenDimensions: { width: 1000, height: 1000 },
                     switchTabsOnActivity: true // detect user activity in the browser to try and keep active tab in sync
                 });
                 await harness.start();

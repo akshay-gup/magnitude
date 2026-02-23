@@ -133,6 +133,22 @@ export class DesktopConnector implements AgentConnector {
         return info;
     }
     
+    /**
+     * Transform coordinates from virtual screen space (what the LLM sees)
+     * back to actual screen dimensions.
+     */
+    async transformCoordinates({ x, y }: { x: number, y: number }): Promise<{ x: number, y: number }> {
+        const virtual = this.options.virtualScreenDimensions;
+        if (!virtual) {
+            return { x, y };
+        }
+        const screenSize = await this.desktopInterface.getScreenSize();
+        return {
+            x: x * (screenSize.width / virtual.width),
+            y: y * (screenSize.height / virtual.height),
+        };
+    }
+
     // Expose interface for actions to use
     getInterface(): DesktopInterface {
         return this.desktopInterface;

@@ -158,18 +158,16 @@ export function buildDefaultBrowserAgentOptions(
     }
 
     // Set reasonable temp if not provided
-    let virtualScreenDimensions = null;
     for (const llm of llms) {
         let llmOptions: LLMClient['options'] = { temperature: DEFAULT_BROWSER_AGENT_TEMP, ...(llm?.options ?? {}) };
         //let modifiedLlm = {...llm, options: llmOptions as any }
         llm.options = llmOptions;
-
-        if (isClaude(llm)) {
-            // Claude only really works on 1024x768 screenshots
-            // if any model is claude, use virtual screen dimensions
-            virtualScreenDimensions = { width: 1024, height: 768 };
-        }
     }
+
+    // Scale all screenshots to a fixed 1000x1000 resolution for the LLM.
+    // Output coordinates from the LLM are reverse-scaled back to actual viewport dimensions
+    // by the connector's transformCoordinates method.
+    const virtualScreenDimensions = { width: 1000, height: 1000 };
 
     return {
         agentOptions: {...agentOptions, llm: llms },

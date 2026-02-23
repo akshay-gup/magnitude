@@ -12,6 +12,7 @@ export const desktopClickAction = createAction({
     }),
     resolver: async ({ input: { x, y }, agent }) => {
         const desktop = agent.require(DesktopConnector);
+        ({ x, y } = await desktop.transformCoordinates({ x, y }));
         await desktop.getInterface().click(x, y);
     },
     render: ({ x, y }) => `⊙ click (${x}, ${y})`
@@ -26,6 +27,7 @@ export const desktopRightClickAction = createAction({
     }),
     resolver: async ({ input: { x, y }, agent }) => {
         const desktop = agent.require(DesktopConnector);
+        ({ x, y } = await desktop.transformCoordinates({ x, y }));
         await desktop.getInterface().rightClick(x, y);
     },
     render: ({ x, y }) => `⊙ right-click (${x}, ${y})`
@@ -40,6 +42,7 @@ export const desktopDoubleClickAction = createAction({
     }),
     resolver: async ({ input: { x, y }, agent }) => {
         const desktop = agent.require(DesktopConnector);
+        ({ x, y } = await desktop.transformCoordinates({ x, y }));
         await desktop.getInterface().doubleClick(x, y);
     },
     render: ({ x, y }) => `⊙ double-click (${x}, ${y})`
@@ -56,6 +59,8 @@ export const desktopDragAction = createAction({
     }),
     resolver: async ({ input: { fromX, fromY, toX, toY }, agent }) => {
         const desktop = agent.require(DesktopConnector);
+        ({ x: fromX, y: fromY } = await desktop.transformCoordinates({ x: fromX, y: fromY }));
+        ({ x: toX, y: toY } = await desktop.transformCoordinates({ x: toX, y: toY }));
         await desktop.getInterface().drag(fromX, fromY, toX, toY);
     },
     render: ({ fromX, fromY, toX, toY }) => `⊙ drag from (${fromX}, ${fromY}) to (${toX}, ${toY})`
@@ -72,6 +77,7 @@ export const desktopScrollAction = createAction({
     }),
     resolver: async ({ input: { x, y, deltaX, deltaY }, agent }) => {
         const desktop = agent.require(DesktopConnector);
+        ({ x, y } = await desktop.transformCoordinates({ x, y }));
         await desktop.getInterface().scroll(x, y, deltaX, deltaY);
     },
     render: ({ x, y, deltaX, deltaY }) => `↕ scroll (${deltaX}px, ${deltaY}px)`
